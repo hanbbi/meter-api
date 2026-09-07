@@ -1,0 +1,20 @@
+services:
+  mariadb:
+    image: mariadb:10.11
+    container_name: qopt-mariadb
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: rootpw
+      MARIADB_DATABASE: qopt
+    ports:
+      - "3307:3306"
+    command:
+      - --local-infile=1
+    volumes:
+      - qopt-data:/var/lib/mysql
+
+volumes:
+  qopt-data:
+
+# 참고: 스키마(meter_reading, monthly_meter_summary)와 데이터 적재는
+# mariadb-query-optimization 레포의 sql/ 스크립트로 진행합니다. README 참고.
