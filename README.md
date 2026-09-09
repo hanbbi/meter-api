@@ -1,11 +1,8 @@
 # meter-api — Spring Boot 3 + JPA 검침 조회 API
 
-수천만 행 규모의 시계열 검침 데이터를, **커서(no-offset) 페이지네이션**과 **월별 요약 테이블
-조회**로 안정적으로 서빙하는 REST API입니다.
-[mariadb-query-optimization](https://github.com/hanbbi/mariadb-query-optimization) 레포에서
-최적화한 스키마(`meter_reading`, `monthly_meter_summary`) 위에 얹은, 그 후속 프로젝트입니다.
-
-> SQL 레벨의 최적화(앞 레포)부터 API 레벨의 대용량 조회(이 레포)까지 한 흐름으로 다룹니다.
+검침 원본이 수천만 행일 때 조회 API를 어떻게 짜야 안 느려지는지 정리한 프로젝트입니다. 핵심은 두 가지.
+OFFSET 대신 커서로 페이지를 넘기고, 월 집계는 원본이 아니라 요약 테이블에서 읽습니다.
+앞선 mariadb-query-optimization에서 잡은 스키마 위에 얹었습니다.
 
 ---
 
@@ -95,10 +92,3 @@ src/main/java/com/hanbi/meterapi
 ├── controller/    # REST 엔드포인트
 └── dto/           # 응답 record (CursorPageResponse 등)
 ```
-
----
-
-## 다음 개선 아이디어(작성 중)
-- QueryDSL 도입으로 동적 조건(기간·단말기 필터) 정리
-- 커서를 `(reading_at, id)` 복합 커서로 확장해 시간 기준 정렬 강화
-- 통합 테스트(@DataJpaTest, Testcontainers) 추가
